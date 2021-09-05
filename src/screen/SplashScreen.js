@@ -25,7 +25,7 @@ useEffect(()=>{
         let user = await AsyncStorage.getItem('user');
         let parsedUser = JSON.parse(user);
         setUserToStore(parsedUser);
-        navigation.navigate('Tabs',{screen : 'Dashboard'});
+        navigation.replace('Tabs',{screen : 'Dashboard'});
       } else {
         navigation.replace('Auth');
       }

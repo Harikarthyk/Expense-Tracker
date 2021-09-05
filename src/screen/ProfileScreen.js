@@ -5,7 +5,7 @@ import normalize from 'react-native-normalize'
 import { List } from 'react-native-paper';
 import { theme } from '../core/theme';
 
-function ProfileScreen({navigation}) {
+function ProfileScreen({nav}) {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.white }}>
             <View
@@ -89,7 +89,7 @@ function ProfileScreen({navigation}) {
                         borderBottomColor: '#E5E5E5',
                     }}
                     onPress={() => {
-                        Linking.openURL('mailto:hari.jsmith494@gmaiil.com');
+                        Linking.openURL('mailto:hari.jsmith494@gmail.com');
                     }}>
                     <Text style={{  fontWeight: '600', fontSize: normalize(19), lineHeight : normalize(31.23) }}>
                         Contact us

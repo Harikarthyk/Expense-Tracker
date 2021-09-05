@@ -20,6 +20,7 @@ import { requestHandler } from '../services/index';
 import { API } from '../utils/url'
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from 'react-native-modal-loader';
 
 const AuthScreen = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: false });
@@ -38,7 +39,6 @@ const AuthScreen = ({ navigation }) => {
       };
       let response = await requestHandler(url, inputData, headers, method);
       const { data } = response;
-      console.log(data)
       setLoader(false);
       if (data?.success === true) {
         Toast.show('Lets move in');
@@ -100,7 +100,7 @@ const AuthScreen = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Expense Tracker</Text>
       </View>
-
+<Loader loading={loader} color={theme.colors.primary}/>
       <View style={styles.footer}>
         <ScrollView style={{
           flex: 1
