@@ -104,14 +104,12 @@ const AddTransaction = ({
       ToastAndroid.show('Enter Title to continue', ToastAndroid.SHORT);
       return;
     }
-    if (parseInt(price) < 0 || parseInt(price) > 100000) {
-      ToastAndroid.show('Price must be min 1');
-      return;
-    }
-    if (value.length === 0) {
-      ToastAndroid.show('Mention some category');
-      return;
-    }
+    console.log(typeof price);
+    // if (parseInt(price) < 0 || parseInt(price) > 100000) {
+    //   ToastAndroid.show('Price must be min 1');
+    //   return;
+    // }
+  
     setIsLoading(true);
     let method = "POST";
     let url = `${API}/${visible === "incomes" ? "income" : "expense"}/add/${user?._id}`;
@@ -126,9 +124,21 @@ const AddTransaction = ({
       price: price,
       user: user._id
     };
+    // console.log(typeof body.category)
+    // if(body.category === null){
+    //   ToastAndroid.show('Mention some category');
+    //   setIsLoading(false);
+    //   return;
+    // }
+    if(body.price === 0 && body.price <= 100000 ){
+      // ToastAndroid.show('Not valid price');
+      Alert.alert('Error','Price not in range')
+      setIsLoading(false);
+      return;
+    }
     let response = await requestHandler(url, body, header, method);
     let { data } = response;
-    console.log(data);
+    // console.log(data);
     if (data.success === true) {
       setTitle('');
       setDescription('');
@@ -158,7 +168,6 @@ const AddTransaction = ({
 
     } else {
       Alert.alert('Error', "something went wrong")
-
     }
     setIsLoading(false);
 

@@ -1,10 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react'
 import { SafeAreaView, ScrollView, Text, View, TouchableOpacity , Image, Linking } from 'react-native'
 import normalize from 'react-native-normalize'
 import { List } from 'react-native-paper';
 import { theme } from '../core/theme';
 
-function ProfileScreen() {
+function ProfileScreen({navigation}) {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.white }}>
             <View

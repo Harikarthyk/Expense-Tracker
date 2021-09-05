@@ -6,6 +6,7 @@ import normalize from 'react-native-normalize';
 import { theme } from '../core/theme';
 import MonthPicker from 'react-native-month-year-picker';
 import { requestHandler } from '../services';
+import Loader from "react-native-modal-loader";
 import { API } from '../utils/url';
 import { setUserToStore } from '../redux/action/user';
 import SwipeGesture from '../components/Swipper/index';
@@ -31,7 +32,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
     itemId: ''
   })
   const showPicker = useCallback((value) => setShow(value), []);
-  
+  const colors = ["#9164de","#5f8ac2","#c25f91","#5f9c63","#d49d46"]
   /**
    * Delete expense or income by id
    * @returns void
@@ -46,7 +47,8 @@ const Dashboard = ({ navigation, user, setUser }) => {
     let body = {
       isDeleted: true
     };
-    let response = await requestHandler(url, body, header, method); setIsLoading(false);
+    let response = await requestHandler(url, body, header, method);
+     setIsLoading(false);
 
     if (!response || response.data.success === false) {
       Alert.alert('Error', 'Something went wrong');
@@ -89,6 +91,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
       title: '',
       itemId: ''
     })
+    setIsLoading(false);
   }
 
   /**
@@ -165,6 +168,8 @@ const Dashboard = ({ navigation, user, setUser }) => {
       backgroundColor: theme.colors.white,
       flex: 1
     }}>
+      <Loader loading={isLoading} color={theme.colors.primary} />
+        
       <ScrollView style={{
         flex: 1,
         padding: normalize(18),
@@ -214,7 +219,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
         </Text>
         <Animated.View style={styles.HomeBody}>
           <LinearGradient
-            colors={[theme.colors.primary, "#1b3763", "#455875"]}
+            colors={[theme.colors.primary, "#7a91ff"]}
             style={[{ ...styles.Box, borderRadius: normalize(11), height: height / 3.7 }]}>
             <Text
               style={{
@@ -419,7 +424,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 // height: normalize(50),
                 width: '98%',
                 alignSelf: "center",
-                backgroundColor: "#99bbe8",
+                backgroundColor: colors[Math.floor(Math.random() * colors.length)],
                 padding: normalize(15),
                 flexDirection: "row",
                 alignItems: 'center',

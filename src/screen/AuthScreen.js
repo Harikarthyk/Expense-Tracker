@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -58,6 +59,14 @@ const AuthScreen = ({ navigation }) => {
       email: email.value.trim(),
       password: password.value
     };
+    if(data.email.length <= 5){
+      setEmail({error: 'Not valid Email'});
+      return;
+    }
+    if(data.password.length <= 5){
+      setPassword({error: "Password must be minimum 6 characters"});
+      return;
+    }
     helper("user/login", data);
   };
 
@@ -67,10 +76,21 @@ const AuthScreen = ({ navigation }) => {
       password: password.value,
       name: name.value
     };
+    if(data.email.length <= 5){
+      setEmail({error: 'Not valid Email'});
+      return;
+    }
+    if(data.password.length <= 5){
+      setPassword({error: "Password must be minimum 6 characters"});
+      return;
+    }
     helper("user/register", data);
   }
 
   const changeMode = (mode) => {
+    setPassword({value: "" ,error: ''});
+    setEmail({value: "" , error: ""});
+    setName({value: "" , error: ""})
     setVisible(mode);
   }
 
