@@ -1,0 +1,1 @@
+export const API = `https://e7f0-150-129-89-236.ngrok.io/api`
