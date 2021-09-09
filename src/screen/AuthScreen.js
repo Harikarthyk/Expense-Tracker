@@ -46,7 +46,7 @@ const AuthScreen = ({ navigation }) => {
         await AsyncStorage.setItem('token', JSON.stringify(data?.user?.jwtToken));
         navigation.replace('SplashScreen');
       } else {
-        Toast.show(data?.message);
+        Toast.show(data?.message || 'Something went wrong');
       }
     } catch (error) {
       console.log('-----------------AuthScreen Line 50-----------------');
@@ -86,6 +86,7 @@ const AuthScreen = ({ navigation }) => {
     }
     helper("user/register", data);
   }
+
 
   const changeMode = (mode) => {
     setPassword({value: "" ,error: ''});

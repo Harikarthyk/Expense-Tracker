@@ -5,7 +5,7 @@ import normalize from 'react-native-normalize'
 import { List } from 'react-native-paper';
 import { theme } from '../core/theme';
 
-function ProfileScreen({nav}) {
+function ProfileScreen({navigation}) {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.white }}>
             <View
@@ -77,6 +77,24 @@ function ProfileScreen({nav}) {
                         Support us
                     </Text>
                     <List.Icon icon="credit-card-refund" color={theme.colors.primary} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={{
+                        width: '100%',
+                        justifyContent: 'space-between',
+                        padding: normalize(5),
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#E5E5E5',
+                    }}
+                    onPress={() => {
+                        Linking.openURL('https://www.patreon.com/harikarthyk');
+                    }}>
+                    <Text style={{ fontWeight: '600', fontSize: normalize(19), lineHeight : normalize(31.23) }}>
+                        Switch Theme
+                    </Text>
+                    <List.Icon icon="theme-light-dark" color={theme.colors.primary} />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{

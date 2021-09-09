@@ -9,7 +9,6 @@ import { requestHandler } from '../services';
 import Loader from "react-native-modal-loader";
 import { API } from '../utils/url';
 import { setUserToStore } from '../redux/action/user';
-import SwipeGesture from '../components/Swipper/index';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 const months = ["Jan", "Feb", "March", "April", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
@@ -32,7 +31,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
     itemId: ''
   })
   const showPicker = useCallback((value) => setShow(value), []);
-  const colors = ["#9164de","#5f8ac2","#c25f91","#5f9c63","#d49d46"]
+  const colors = ["#9164de", "#5f8ac2", "#c25f91", "#5f9c63", "#d49d46"]
   /**
    * Delete expense or income by id
    * @returns void
@@ -48,7 +47,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
       isDeleted: true
     };
     let response = await requestHandler(url, body, header, method);
-     setIsLoading(false);
+    setIsLoading(false);
 
     if (!response || response.data.success === false) {
       Alert.alert('Error', 'Something went wrong');
@@ -58,8 +57,6 @@ const Dashboard = ({ navigation, user, setUser }) => {
     };
     if (tab === "income") {
       let newIncomes = user.incomes.filter(item => item._id !== alert.itemId);
-
-
       let totalIncomes = await newIncomes.reduce(reducer, 0);
       setCardValue({
         income: totalIncomes,
@@ -97,16 +94,54 @@ const Dashboard = ({ navigation, user, setUser }) => {
   /**
    * On Change on date update state
    */
-  const onValueChange = useCallback(
-    (event, newDate) => {
-      const selectedDate = newDate || date;
+  const onValueChange = async (event, newDate) => {
+    const selectedDate = newDate || date;
+    showPicker(false);
 
-      setDate(selectedDate);
-      showPicker(false);
-      getCardValue();
-    },
-    [date, showPicker],
-  );
+    setDate(selectedDate);
+    var firstDay =
+      new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+
+    var lastDay =
+      new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
+    let method = "POST";
+    let url = `${API}/user/info/${user?._id}`;
+    let header = {
+      'Authorization': `Bearer ${user?.jwtToken}`
+    };
+    let body = {
+      firstDay: firstDay,
+      lastDay: lastDay
+    };
+    const reducer = async (accumulator, currentValue) => {
+      console.log(currentValue);
+      return await accumulator + currentValue.price
+    };
+
+    let response = await requestHandler(url, body, header, method);
+    if (!response || response?.data?.success === false) {
+      setIsLoading(false);
+      Alert.alert('Error', 'Something Went Wrong');
+    }
+    const { data } = response;
+    let totalExpense = await data.expenses.reduce(reducer, 0);
+    let totalIncomes = await data.incomes.reduce(reducer, 0);
+    setCardValue({
+      income: totalIncomes,
+      expense: totalExpense,
+      balance: totalIncomes - totalExpense
+    })
+    setUser({
+      income: (totalIncomes).toFixed(2),
+      expense: totalExpense.toFixed(2),
+      balance: (totalIncomes - totalExpense).toFixed(2),
+      expenses: data.expenses,
+      incomes: data.incomes,
+      month: date.getMonth(),
+    })
+    setIsLoading(false);
+  }
+
 
   /**
    * getting initial value for the card
@@ -169,7 +204,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
       flex: 1
     }}>
       <Loader loading={isLoading} color={theme.colors.primary} />
-        
+
       <ScrollView style={{
         flex: 1,
         padding: normalize(18),
@@ -237,7 +272,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 marginTop: normalize(5),
                 marginBottom: normalize(15)
               }}
-            >$ {user?.balance}</Text>
+            >₹ {user?.balance}</Text>
             <View
               style={{
                 flexDirection: "row"
@@ -293,20 +328,28 @@ const Dashboard = ({ navigation, user, setUser }) => {
                   justifyContent: "space-between"
                 }}
               >
+                <View
+                  style={{ flexDirection: "row", alignSelf: "center", justifyContent: "center", alignItems: "center", }}
+                >
+
+                  <Text
+                    style={{
+                      fontSize: normalize(20.2),
+                      lineHeight: normalize(21.21),
+                      color: theme.colors.white,
+
+                    }}
+                  >
+
+                    Income {user?.income} ₹ </Text>
+                </View>
                 <Text
                   style={{
-                    fontSize: normalize(20.2),
+                    fontSize: normalize(19.2),
                     lineHeight: normalize(21.21),
                     color: theme.colors.white
                   }}
-                >Income {user?.income} $</Text>
-                <Text
-                  style={{
-                    fontSize: normalize(20.2),
-                    lineHeight: normalize(21.21),
-                    color: theme.colors.white
-                  }}
-                >Expense {user?.expense} $</Text>
+                >Expense {user?.expense} ₹ </Text>
               </View>
             </View>
           </LinearGradient>
@@ -467,7 +510,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                     textAlign: "center"
                   }}
                 >
-                  $ {item.price}
+                  ₹{item.price}
                 </Text>
               </View>
 

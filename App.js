@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from './src/screen/SplashScreen';
 import Auth from './src/navigation/Auth';
-import { Provider } from 'react-native-paper';
+import { Provider as PaperProvided , DarkTheme as PaperDarkTheme } from 'react-native-paper';
 import { theme } from './src/core/theme';
 import Tabs from './src/navigation/Tabs';
 import Dashboard from './src/screen/Dashboard';
@@ -14,7 +14,7 @@ import ProfileScreen from './src/screen/ProfileScreen';
 const App = () => {
   const RootStack = createStackNavigator();
   return (
-    <Provider theme={theme}>
+    <PaperProvided theme={theme}>
       <NavigationContainer>
         <RootStack.Navigator initialRouteName="SplashScreen">
           <RootStack.Screen
@@ -39,7 +39,7 @@ const App = () => {
           />
         </RootStack.Navigator>
       </NavigationContainer>
-    </Provider>
+    </PaperProvided>
   );
 };
 
