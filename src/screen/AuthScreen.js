@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Dimensions,
   KeyboardAvoidingView,
+  Linking,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -37,7 +38,7 @@ const AuthScreen = ({ navigation }) => {
       let headers = {
         'Content-Type': 'application/json'
       };
-      let response = await requestHandler(url, inputData, headers, method);
+      let response = await requestHandler(url, inputData, headers, method, navigation);
       const { data } = response;
       setLoader(false);
       if (data?.success === true) {
@@ -260,7 +261,27 @@ const AuthScreen = ({ navigation }) => {
                   </Text>
                 </TouchableOpacity>
               </View>}
+              <TouchableOpacity
+
+                  disabled={loader}
+                  onPress={() => {
+                    Linking.openURL(`https://expense-tracker-apinative.herokuapp.com/forgot-password`);
+                  }}
+                  style={{
+                    marginVertical: normalize(7)
+                  }}
+                >
+                  <Text style={{
+                    color: theme.colors.black,
+                    fontSize: normalize(17),
+                    lineHeight: normalize(29.87),
+                    textAlign: "center"
+                  }}>
+                    Forgot Your Password ?
+                  </Text>
+                </TouchableOpacity>
           </View>
+          
         </ScrollView>
 
       </View>

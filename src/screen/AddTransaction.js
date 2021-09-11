@@ -57,8 +57,8 @@ const AddTransaction = ({
       };
       let body = null;
       setIsLoading(true);
-      let response_expense = await requestHandler(url_expense, body, header, method);
-      let response_income = await requestHandler(url_income, body, header, method);
+      let response_expense = await requestHandler(url_expense, body, header, method , navigation);
+      let response_income = await requestHandler(url_income, body, header, method, navigation);
       setIsLoading(false);
       setExpenseCategories(response_expense?.data);
       setIncomeCategories(response_income?.data);
@@ -104,7 +104,6 @@ const AddTransaction = ({
       ToastAndroid.show('Enter Title to continue', ToastAndroid.SHORT);
       return;
     }
-    console.log(typeof price);
     // if (parseInt(price) < 0 || parseInt(price) > 100000) {
     //   ToastAndroid.show('Price must be min 1');
     //   return;
@@ -124,28 +123,25 @@ const AddTransaction = ({
       price: price,
       user: user._id
     };
-    // console.log(typeof body.category)
-    // if(body.category === null){
-    //   ToastAndroid.show('Mention some category');
-    //   setIsLoading(false);
-    //   return;
-    // }
+    if(!body.category ){
+      ToastAndroid.show('Mention Category', ToastAndroid.SHORT);
+    setIsLoading(false);
+      return;
+    }
     if(body.price === 0 && body.price <= 100000 ){
-      // ToastAndroid.show('Not valid price');
       Alert.alert('Error','Price not in range')
       setIsLoading(false);
       return;
     }
-    let response = await requestHandler(url, body, header, method);
+    console.log(body)
+    let response = await requestHandler(url, body, header, method, navigation);
     let { data } = response;
-    // console.log(data);
     if (data.success === true) {
       setTitle('');
       setDescription('');
       setValue('');
       Alert.alert('Success', "Added Successfully");
       const reducer = async (accumulator, currentValue) => {
-        console.log(currentValue);
         return await accumulator + currentValue.price
       };
       let date = new Date()

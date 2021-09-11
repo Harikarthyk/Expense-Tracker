@@ -1,5 +1,6 @@
 import React from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import { theme } from '../core/theme';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -45,6 +46,7 @@ const Transaction = () => {
               fontSize: 18.0,
               fontWeight: 'bold',
               padding: 10,
+              color: theme.colors.black
             }}>
             Food
           </Text>

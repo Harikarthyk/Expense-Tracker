@@ -46,7 +46,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
     let body = {
       isDeleted: true
     };
-    let response = await requestHandler(url, body, header, method);
+    let response = await requestHandler(url, body, header, method, navigation);
     setIsLoading(false);
 
     if (!response || response.data.success === false) {
@@ -114,11 +114,10 @@ const Dashboard = ({ navigation, user, setUser }) => {
       lastDay: lastDay
     };
     const reducer = async (accumulator, currentValue) => {
-      console.log(currentValue);
       return await accumulator + currentValue.price
     };
 
-    let response = await requestHandler(url, body, header, method);
+    let response = await requestHandler(url, body, header, method, navigation);
     if (!response || response?.data?.success === false) {
       setIsLoading(false);
       Alert.alert('Error', 'Something Went Wrong');
@@ -163,11 +162,10 @@ const Dashboard = ({ navigation, user, setUser }) => {
       lastDay: lastDay
     };
     const reducer = async (accumulator, currentValue) => {
-      console.log(currentValue);
       return await accumulator + currentValue.price
     };
 
-    let response = await requestHandler(url, body, header, method);
+    let response = await requestHandler(url, body, header, method, navigation);
     if (!response || response?.data?.success === false) {
       setIsLoading(false);
       Alert.alert('Error', 'Something Went Wrong');
@@ -197,6 +195,18 @@ const Dashboard = ({ navigation, user, setUser }) => {
   useEffect(() => {
     getCardValue();
   }, [])
+
+  const greetingText = () => {
+    let date = new Date();
+    const hour = date.getHours();
+    if (hour >= 5 && hour < 12) {
+      return "Good morning";
+    } else if (hour >= 12 && hour < 17) {
+      return "Good afternoon";
+    } else if ((hour >= 17 && hour <= 23) || hour < 5) {
+      return "Good evening";
+    }
+  }
 
   return (
     <SafeAreaView style={{
@@ -250,7 +260,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
             marginBottom: normalize(20)
           }}
         >
-          Save your HardWork !
+          {greetingText()}
         </Text>
         <Animated.View style={styles.HomeBody}>
           <LinearGradient
@@ -263,7 +273,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 fontSize: normalize(21),
                 lineHeight: normalize(31.11)
               }}
-            >Your Packet is left with</Text>
+            >{(Number(user?.balance)).toFixed(2) > 0 ? "Your Packet is left with" : "Crossing your limit this month"} </Text>
             <Text
               style={{
                 fontSize: normalize(37.1),
@@ -272,7 +282,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 marginTop: normalize(5),
                 marginBottom: normalize(15)
               }}
-            >₹ {user?.balance}</Text>
+            >₹ {(Number(user?.balance)).toFixed(2)}</Text>
             <View
               style={{
                 flexDirection: "row"
@@ -341,7 +351,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                     }}
                   >
 
-                    Income {user?.income} ₹ </Text>
+                    Earned {Number(user?.income).toFixed(2)} ₹ </Text>
                 </View>
                 <Text
                   style={{
@@ -349,7 +359,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                     lineHeight: normalize(21.21),
                     color: theme.colors.white
                   }}
-                >Expense {user?.expense} ₹ </Text>
+                >Spent {Number(user?.expense).toFixed(2)} ₹ </Text>
               </View>
             </View>
           </LinearGradient>

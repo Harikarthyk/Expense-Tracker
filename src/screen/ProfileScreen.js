@@ -73,7 +73,8 @@ function ProfileScreen({navigation}) {
                     onPress={() => {
                         Linking.openURL('https://www.patreon.com/harikarthyk');
                     }}>
-                    <Text style={{ fontWeight: '600', fontSize: normalize(19), lineHeight : normalize(31.23) }}>
+                    <Text style={{
+              color: theme.colors.black, fontWeight: '600', fontSize: normalize(19), lineHeight : normalize(31.23) }}>
                         Support us
                     </Text>
                     <List.Icon icon="credit-card-refund" color={theme.colors.primary} />
@@ -89,10 +90,11 @@ function ProfileScreen({navigation}) {
                         borderBottomColor: '#E5E5E5',
                     }}
                     onPress={() => {
-                        Linking.openURL('https://www.patreon.com/harikarthyk');
+                        navigation.navigate('ReportScreen');    
                     }}>
-                    <Text style={{ fontWeight: '600', fontSize: normalize(19), lineHeight : normalize(31.23) }}>
-                        Switch Theme
+                    <Text style={{ fontWeight: '600', fontSize: normalize(19), lineHeight : normalize(31.23),
+              color: theme.colors.black }}>
+                        View Reports
                     </Text>
                     <List.Icon icon="theme-light-dark" color={theme.colors.primary} />
                 </TouchableOpacity>
@@ -109,7 +111,8 @@ function ProfileScreen({navigation}) {
                     onPress={() => {
                         Linking.openURL('mailto:hari.jsmith494@gmail.com');
                     }}>
-                    <Text style={{  fontWeight: '600', fontSize: normalize(19), lineHeight : normalize(31.23) }}>
+                    <Text style={{ 
+              color: theme.colors.black, fontWeight: '600', fontSize: normalize(19), lineHeight : normalize(31.23) }}>
                         Contact us
                     </Text>
                     <List.Icon icon="contacts" color={theme.colors.primary} />

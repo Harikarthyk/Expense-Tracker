@@ -4,11 +4,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from './src/screen/SplashScreen';
 import Auth from './src/navigation/Auth';
-import { Provider as PaperProvided , DarkTheme as PaperDarkTheme } from 'react-native-paper';
+import { Provider as PaperProvided, DarkTheme as PaperDarkTheme } from 'react-native-paper';
 import { theme } from './src/core/theme';
 import Tabs from './src/navigation/Tabs';
 import Dashboard from './src/screen/Dashboard';
 import ProfileScreen from './src/screen/ProfileScreen';
+import ReportScreen from './src/screen/ReportScreen';
 
 
 const App = () => {
@@ -36,6 +37,14 @@ const App = () => {
             name="Dashboard"
             component={Dashboard}
             options={{ headerShown: false }}
+          />
+          <RootStack.Screen
+            name="ReportScreen"
+            component={ReportScreen}
+            options={{ 
+              headerTitle : "Reports"
+              // headerShown: false 
+            }}
           />
         </RootStack.Navigator>
       </NavigationContainer>
