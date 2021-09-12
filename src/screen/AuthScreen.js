@@ -57,15 +57,15 @@ const AuthScreen = ({ navigation }) => {
 
   const loginPressed = () => {
     let data = {
-      email: email.value.trim(),
+      email: email?.value.trim(),
       password: password.value
     };
-    if(data.email.length <= 5){
-      setEmail({error: 'Not valid Email'});
+    if (data?.email?.length <= 5) {
+      setEmail({ error: 'Not valid Email' });
       return;
     }
-    if(data.password.length <= 5){
-      setPassword({error: "Password must be minimum 6 characters"});
+    if (data?.password.length <= 5) {
+      setPassword({ error: "Password must be minimum 6 characters" });
       return;
     }
     helper("user/login", data);
@@ -73,16 +73,16 @@ const AuthScreen = ({ navigation }) => {
 
   const registerPressed = () => {
     let data = {
-      email: email.value.trim(),
-      password: password.value,
-      name: name.value
+      email: email?.value?.trim(),
+      password: password?.value,
+      name: name?.value
     };
-    if(data.email.length <= 5){
-      setEmail({error: 'Not valid Email'});
+    if (data?.email?.length <= 5) {
+      setEmail({ error: 'Not valid Email' });
       return;
     }
-    if(data.password.length <= 5){
-      setPassword({error: "Password must be minimum 6 characters"});
+    if (data?.password?.length <= 5) {
+      setPassword({ error: "Password must be minimum 6 characters" });
       return;
     }
     helper("user/register", data);
@@ -90,9 +90,9 @@ const AuthScreen = ({ navigation }) => {
 
 
   const changeMode = (mode) => {
-    setPassword({value: "" ,error: ''});
-    setEmail({value: "" , error: ""});
-    setName({value: "" , error: ""})
+    setPassword({ value: "", error: '' });
+    setEmail({ value: "", error: "" });
+    setName({ value: "", error: "" })
     setVisible(mode);
   }
 
@@ -102,7 +102,7 @@ const AuthScreen = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Expense Tracker</Text>
       </View>
-<Loader loading={loader} color={theme.colors.primary}/>
+      <Loader loading={loader} color={theme.colors.primary} />
       <View style={styles.footer}>
         <ScrollView style={{
           flex: 1
@@ -143,7 +143,7 @@ const AuthScreen = ({ navigation }) => {
                   secureTextEntry
                   returnKeyType="done"
                 />
-                <Button
+                <TouchableOpacity
                   onPress={loginPressed}
                   mode="outlined"
                   style={{
@@ -153,14 +153,17 @@ const AuthScreen = ({ navigation }) => {
                     justifyContent: "center",
                     marginTop: normalize(10)
                   }}
-                  labelStyle={{
-                    color: theme.colors.white,
-                    fontSize: normalize(18),
-                  }}
                   disabled={loader}
                 >
-                  Let's Go
-                </Button>
+                  <Text
+                    style={{
+                      color: theme.colors.white,
+                      fontSize: normalize(18),
+                    }}
+                  >
+                    Let's Go
+                  </Text>
+                </TouchableOpacity>
                 <TouchableOpacity
 
                   disabled={loader}
@@ -261,27 +264,27 @@ const AuthScreen = ({ navigation }) => {
                   </Text>
                 </TouchableOpacity>
               </View>}
-              <TouchableOpacity
+            <TouchableOpacity
 
-                  disabled={loader}
-                  onPress={() => {
-                    Linking.openURL(`https://expense-tracker-apinative.herokuapp.com/forgot-password`);
-                  }}
-                  style={{
-                    marginVertical: normalize(7)
-                  }}
-                >
-                  <Text style={{
-                    color: theme.colors.black,
-                    fontSize: normalize(17),
-                    lineHeight: normalize(29.87),
-                    textAlign: "center"
-                  }}>
-                    Forgot Your Password ?
-                  </Text>
-                </TouchableOpacity>
+              disabled={loader}
+              onPress={() => {
+                Linking.openURL(`https://expense-tracker-apinative.herokuapp.com/forgot-password`);
+              }}
+              style={{
+                marginVertical: normalize(7)
+              }}
+            >
+              <Text style={{
+                color: theme.colors.black,
+                fontSize: normalize(17),
+                lineHeight: normalize(29.87),
+                textAlign: "center"
+              }}>
+                Forgot Your Password ?
+              </Text>
+            </TouchableOpacity>
           </View>
-          
+
         </ScrollView>
 
       </View>

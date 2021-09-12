@@ -63,13 +63,14 @@ const Dashboard = ({ navigation, user, setUser }) => {
         incomes: newIncomes,
         balance: totalIncomes - user.expense
       })
+      
       setUser({
         income: totalIncomes,
         incomes: newIncomes,
         balance: totalIncomes - user.expense
       })
     } else {
-      let newExpense = user.expense.filter(item => item._id !== alert.itemId);
+      let newExpense = user.expenses.filter(item => item._id !== alert.itemId);
       let totalExpense = await newExpense.reduce(reducer, 0);
       setCardValue({
         expense: totalExpense,
@@ -215,7 +216,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
     }}>
       <Loader loading={isLoading} color={theme.colors.primary} />
 
-      <ScrollView style={{
+      <View style={{
         flex: 1,
         padding: normalize(18),
       }}
@@ -265,7 +266,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
         <Animated.View style={styles.HomeBody}>
           <LinearGradient
             colors={[theme.colors.primary, "#7a91ff"]}
-            style={[{ ...styles.Box, borderRadius: normalize(11), height: height / 3.7 }]}>
+            style={[{ ...styles.Box, borderRadius: normalize(11), height: height / 4.5 }]}>
             <Text
               style={{
                 textAlign: "center",
@@ -273,20 +274,20 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 fontSize: normalize(21),
                 lineHeight: normalize(31.11)
               }}
-            >{(Number(user?.balance)).toFixed(2) > 0 ? "Your Packet is left with" : "Crossing your limit this month"} </Text>
+            >{(Number(user?.balance)).toFixed(2) > 0 ? "Your are left with" : "Crossing your limit this month"} </Text>
             <Text
               style={{
-                fontSize: normalize(37.1),
+                fontSize: normalize(28.1),
                 textAlign: "center",
                 color: theme.colors.white,
                 marginTop: normalize(5),
-                marginBottom: normalize(15)
+                // marginBottom: normalize(15)
               }}
             >₹ {(Number(user?.balance)).toFixed(2)}</Text>
             <View
               style={{
                 flexDirection: "row"
-                , height: "55%"
+                , height: "59%"
                 , justifyContent: "space-around",
                 marginTop: normalize(15)
               }}
@@ -322,7 +323,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 >{JSON.stringify(date.getFullYear())}</Text>
                 <Text
                   style={{
-                    fontSize: normalize(21),
+                    fontSize: normalize(19),
                     textAlign: "center",
                     flex: 1,
                     justifyContent: "center",
@@ -332,7 +333,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                   }}
                 >{months[(date.getMonth())]}</Text>
               </TouchableOpacity>
-              <View
+              {/* <View
                 style={{
                   height: "60%",
                   justifyContent: "space-between"
@@ -344,14 +345,14 @@ const Dashboard = ({ navigation, user, setUser }) => {
 
                   <Text
                     style={{
-                      fontSize: normalize(20.2),
+                      fontSize: normalize(19.2),
                       lineHeight: normalize(21.21),
                       color: theme.colors.white,
 
                     }}
                   >
 
-                    Earned {Number(user?.income).toFixed(2)} ₹ </Text>
+                    Earned (₹ {Number(user?.income).toFixed(2)}) </Text>
                 </View>
                 <Text
                   style={{
@@ -359,8 +360,8 @@ const Dashboard = ({ navigation, user, setUser }) => {
                     lineHeight: normalize(21.21),
                     color: theme.colors.white
                   }}
-                >Spent {Number(user?.expense).toFixed(2)} ₹ </Text>
-              </View>
+                >Spent (₹ {Number(user?.expense).toFixed(2)}) </Text>
+              </View> */}
             </View>
           </LinearGradient>
         </Animated.View>
@@ -403,7 +404,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 }
               ]}
             >
-              Track your Expense
+              Spent  ₹ {Number(user?.expense).toFixed(0)}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -438,11 +439,11 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 }
               ]}
             >
-              Track your Income
+              Earned  ₹ {Number(user?.income).toFixed(0)}
             </Text>
           </TouchableOpacity>
         </View>
-        {user && isLoading === false && user[tab + "s"].length === 0 &&
+        {user && isLoading === false && user?.incomes && user?.expenses && user[tab + "s"].length === 0 &&
           <View
             style={{
               height: normalize(90),
@@ -456,83 +457,112 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 fontWeight: "500",
                 fontSize: normalize(19)
               }}
-            >Oops Nothing to show!</Text>
+            >
+              Oops Nothing to show!
+            </Text>
           </View>
         }
+        {user && isLoading === false && tab && user?.incomes && user?.expenses && user[tab + "s"].length > 0 && <FlatList
+          showsVerticalScrollIndicator={false}
+          data={user?.incomes && user?.expenses && user[tab + "s"] || []}
+          renderItem={({ item, index }) => {
+            return (
+              <>
+                <TouchableOpacity
+                  disabled={alert.visible}
+                  key={item._id}
+                  onPress={() => {
+                    setAlert({
+                      visible: true,
+                      title: 'Delete Task',
+                      text: 'Are you sure ?',
+                      itemId: item._id
+                    })
+                    // Alert.alert(
+                    //   "Delete Task",
+                    //   "Are you sure you want to delete ?",
+                    //   [
+                    //     {
+                    //       text: "Cancel",
+                    //       onPress: () => console.log("Cancel Pressed"),
+                    //       style: "cancel"
+                    //     },
+                    //     { text: "OK", onPress: () => {
 
-        {user && isLoading === false && user[tab + "s"].map(item => {
-          return (
-
-            <TouchableOpacity
-              key={item._id}
-              onLongPress={() => {
-                setAlert({
-                  visible: true,
-                  title: 'Delete Task',
-                  text: 'Are you sure ?',
-                  itemId: item._id
-                })
-              }}
-              style={{
-                // height: normalize(50),
-                width: '98%',
-                alignSelf: "center",
-                backgroundColor: colors[Math.floor(Math.random() * colors.length)],
-                padding: normalize(15),
-                flexDirection: "row",
-                alignItems: 'center',
-                elevation: 1,
-                borderRadius: normalize(12),
-                marginBottom: normalize(10)
-              }}
-            >
-              <View
-                style={{
-                  flex: .7
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: normalize(19),
-                    lineHeight: normalize(26.3),
-                    color: theme.colors.black
+                    //     } }
+                    //   ]
+                    // )
                   }}
-                >{item.title}</Text>
-                <Text
                   style={{
-                    color: theme.colors.black,
-                    fontSize: normalize(17),
-                    fontWeight: "200"
-                  }}
-                >{item.description}</Text>
-              </View>
-              <View
-                style={{
-                  flex: .6
-                }}
-              >
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: normalize(26),
-                    lineHeight: normalize(32.1),
-                    color: theme.colors.white,
-                    textAlign: "center"
+                    height: normalize(70),
+                    width: '98%',
+                    alignSelf: "center",
+                    backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+                    padding: normalize(15),
+                    flexDirection: "row",
+                    alignItems: 'center',
+                    elevation: 1,
+                    borderRadius: normalize(12),
+                    marginBottom: normalize(10)
                   }}
                 >
-                  ₹{item.price}
-                </Text>
-              </View>
+                  <View
+                    style={{
+                      flex: .7
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: normalize(19),
+                        lineHeight: normalize(26.3),
+                        color: theme.colors.black
+                      }}
+                    >{item.title}</Text>
+                    <Text
+                      style={{
+                        color: theme.colors.black,
+                        fontSize: normalize(17),
+                        fontWeight: "200"
+                      }}
+                    >{item.description}</Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: .6
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: normalize(26),
+                        lineHeight: normalize(32.1),
+                        color: theme.colors.white,
+                        textAlign: "center"
+                      }}
+                    >
+                      ₹{item.price}
+                    </Text>
+                  </View>
 
-            </TouchableOpacity>
+                </TouchableOpacity>
+                {index + 1 === user[tab + "s"].length &&
+                  <View
+                    style={{
+                      height: normalize(75)
+                    }}
+                  >
 
-
-          )
-        })}
-        <View style={{
-          height: normalize(135)
-        }}></View>
-      </ScrollView>
+                  </View>
+                }
+              </>
+            )
+          }}
+          keyExtractor={(item) =>
+            item._id
+          }
+        />
+        }
+      </View>
     </SafeAreaView>
   );
 };

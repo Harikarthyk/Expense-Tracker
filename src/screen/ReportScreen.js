@@ -3,7 +3,7 @@ import { SafeAreaView, Text, View, Dimensions, TouchableOpacity } from 'react-na
 import { connect } from 'react-redux';
 import normalize from 'react-native-normalize';
 import { ScrollView } from 'react-native-gesture-handler';
-import { LineChart } from 'react-native-chart-kit';
+import { BarChart, LineChart } from 'react-native-chart-kit';
 import { theme } from '../core/theme';
 import { API } from '../utils/url';
 import { requestHandler } from '../services';
@@ -169,24 +169,24 @@ export const ReportScreen = ({ navigation, user }) => {
                 >
                     Your Expense for this month
                 </Text>
-                {expenses.isLoading === false && expenses.data.length === 0 &&
-                    <View
-                        style={{
-                            height: normalize(150),
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }}
-                    >
-                        <Text
-                            style={{
-                                textAlign: "center",
-                                fontSize: normalize(20)
-                            }}
-                        >No Records found</Text>
-                    </View>
+                {expenses.isLoading === false && expenses?.data?.length < 2 &&
+                     <View
+                     style={{
+                         height: normalize(150),
+                         justifyContent: "center",
+                         alignItems: "center"
+                     }}
+                 >
+                     <Text
+                         style={{
+                             textAlign: "center",
+                             fontSize: normalize(20)
+                         }}
+                     >No suitable Records found</Text>
+                 </View>
                 }
 
-                {expenses.isLoading === false && expenses.data.length !== 0 &&
+                {expenses.isLoading === false && expenses?.data?.length > 1 &&
                     <View
                         style={{
                             marginVertical: normalize(20)
@@ -242,7 +242,7 @@ export const ReportScreen = ({ navigation, user }) => {
                 >
                     Your Income for this month
                 </Text>
-                {incomes.isLoading === false && incomes.data.length === 0 &&
+                {incomes.isLoading === false && incomes.data.length <= 1 &&
                     <View
                         style={{
                             height: normalize(150),
@@ -255,10 +255,10 @@ export const ReportScreen = ({ navigation, user }) => {
                                 textAlign: "center",
                                 fontSize: normalize(20)
                             }}
-                        >No Records found</Text>
+                        >No suitable Records found</Text>
                     </View>
                 }
-                {incomes.isLoading === false && incomes.data.length !== 0 &&
+                {incomes.isLoading === false && incomes.data.length > 1 &&
                     <View
                         style={{
                             marginVertical: normalize(20)
@@ -274,6 +274,7 @@ export const ReportScreen = ({ navigation, user }) => {
                                     }
                                 ]
                             }}
+
                             width={Dimensions.get("window").width - 28} // from react-native
                             height={270}
                             yAxisLabel="₹"
@@ -281,7 +282,7 @@ export const ReportScreen = ({ navigation, user }) => {
                             yAxisInterval={1} // optional, defaults to 1
                             chartConfig={{
                                 backgroundColor: theme.colors.primary,
-                                backgroundGradientFrom: theme.colors.primary,
+                                backgroundGradientFrom: "#eba365",
                                 // backgroundGradientTo: "#ffa726",
                                 decimalPlaces: 0, // optional, defaults to 2dp
                                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -300,6 +301,7 @@ export const ReportScreen = ({ navigation, user }) => {
                                 marginVertical: normalize(10),
                                 borderRadius: normalize(12)
                             }}
+                            
                         />
                     </View>
                 }

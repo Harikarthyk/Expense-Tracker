@@ -1,4 +1,4 @@
-package com.expensetracker;
+package com.expensetrackerhach;
 
 import android.app.Application;
 import android.content.Context;

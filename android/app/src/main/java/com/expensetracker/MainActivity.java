@@ -1,4 +1,4 @@
-package com.expensetracker;
+package com.expensetrackerhach;
 
 import com.facebook.react.ReactActivity;
 

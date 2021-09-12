@@ -13,6 +13,7 @@ import { FakeCurrencyInput } from 'react-native-currency-input';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { TextInput, Snackbar } from 'react-native-paper';
 import { setUserToStore } from '../redux/action/user';
+import DatePicker from 'react-native-date-picker';
 
 
 
@@ -32,7 +33,8 @@ const AddTransaction = ({
   const [value, setValue] = useState(null);
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
-
+  const [date, setDate] = useState(new Date());
+  const [openDate, setOpenDate] = useState(false);
 
   // useEffect(()=>{
   //   let arr = category[visible==="income" ? "incomeCategories" : "expenseCategories"].map(item => {
@@ -57,7 +59,7 @@ const AddTransaction = ({
       };
       let body = null;
       setIsLoading(true);
-      let response_expense = await requestHandler(url_expense, body, header, method , navigation);
+      let response_expense = await requestHandler(url_expense, body, header, method, navigation);
       let response_income = await requestHandler(url_income, body, header, method, navigation);
       setIsLoading(false);
       setExpenseCategories(response_expense?.data);
@@ -108,7 +110,7 @@ const AddTransaction = ({
     //   ToastAndroid.show('Price must be min 1');
     //   return;
     // }
-  
+
     setIsLoading(true);
     let method = "POST";
     let url = `${API}/${visible === "incomes" ? "income" : "expense"}/add/${user?._id}`;
@@ -121,15 +123,16 @@ const AddTransaction = ({
       description: description,
       category: value,
       price: price,
-      user: user._id
+      user: user._id,
+      createdAt : date
     };
-    if(!body.category ){
+    if (!body.category) {
       ToastAndroid.show('Mention Category', ToastAndroid.SHORT);
-    setIsLoading(false);
+      setIsLoading(false);
       return;
     }
-    if(body.price === 0 && body.price <= 100000 ){
-      Alert.alert('Error','Price not in range')
+    if (body.price === 0 && body.price <= 100000) {
+      Alert.alert('Error', 'Price not in range')
       setIsLoading(false);
       return;
     }
@@ -181,7 +184,18 @@ const AddTransaction = ({
           // justifyContent: "center"
         }}
       >
-
+        <DatePicker
+          modal
+          open={openDate}
+          date={date}
+          onConfirm={(date) => {
+            setOpenDate(false)
+            setDate(date)
+          }}
+          onCancel={() => {
+            setOpenDate(false)
+          }}
+        />
         <Loader loading={isLoading} color={theme.colors.primary} />
         <View
           style={{
@@ -206,8 +220,13 @@ const AddTransaction = ({
           </Text>
           <TouchableOpacity
             onPress={switchMode}
+            style={{
+              backgroundColor: theme.colors.primary,
+              padding: normalize(10),
+              borderRadius: normalize(12)
+            }}
           >
-            <Icon name="retweet" size={22} color={theme.colors.primary} />
+            <Icon name="retweet" size={22} color={theme.colors.white} />
           </TouchableOpacity>
         </View>
         <KeyboardAvoidingView
@@ -321,6 +340,19 @@ const AddTransaction = ({
             borderColor: theme.colors.primary
           }}
         />
+
+        <TouchableOpacity
+          onPress={() => {
+            setOpenDate(true)
+          }}
+        >
+          <Text
+          style={{
+            textAlign : "center",
+            fontSize: normalize(19)
+          }}
+          >{date.toDateString()}</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={{
             width: "90%",
