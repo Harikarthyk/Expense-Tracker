@@ -11,10 +11,12 @@ import normalize from 'react-native-normalize';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { FakeCurrencyInput } from 'react-native-currency-input';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { TextInput, Snackbar } from 'react-native-paper';
+import { TextInput, Snackbar, List } from 'react-native-paper';
 import { setUserToStore } from '../redux/action/user';
 import DatePicker from 'react-native-date-picker';
 
+
+const months = ["Jan", "Feb", "March", "April", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
 
 const AddTransaction = ({
@@ -124,7 +126,7 @@ const AddTransaction = ({
       category: value,
       price: price,
       user: user._id,
-      createdAt : date
+      createdAt: date
     };
     if (!body.category) {
       ToastAndroid.show('Mention Category', ToastAndroid.SHORT);
@@ -177,120 +179,152 @@ const AddTransaction = ({
       backgroundColor: theme.colors.background
 
     }}>
-      <ScrollView
-        contentContainerStyle={{
+      <KeyboardAvoidingView
+        style={{
           flex: 1,
-          backgroundColor: theme.colors.background
-          // justifyContent: "center"
         }}
       >
-        <DatePicker
-          modal
-          open={openDate}
-          date={date}
-          onConfirm={(date) => {
-            setOpenDate(false)
-            setDate(date)
-          }}
-          onCancel={() => {
-            setOpenDate(false)
-          }}
-        />
-        <Loader loading={isLoading} color={theme.colors.primary} />
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "baseline",
-            justifyContent: "center",
-            marginTop: normalize(20)
-          }}
-        >
-          <Text
-            style={{
-              fontSize: normalize(21),
-              lineHeight: normalize(32.14),
-              color: theme.colors.black,
-              marginRight: normalize(15),
-              textTransform: "capitalize",
-              marginBottom: normalize(18)
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
 
-            }}
-          >
-            Add {visible}
-          </Text>
-          <TouchableOpacity
-            onPress={switchMode}
-            style={{
-              backgroundColor: theme.colors.primary,
-              padding: normalize(10),
-              borderRadius: normalize(12)
-            }}
-          >
-            <Icon name="retweet" size={22} color={theme.colors.white} />
-          </TouchableOpacity>
-        </View>
-        <KeyboardAvoidingView
-          behavior="padding"
+            flexGrow: 1,
+            backgroundColor: theme.colors.background
+            // justifyContent: "center"
+          }}
           style={{
-            backgroundColor: theme.colors.primary,
-            width: '90%',
-            alignSelf: "center",
-            height: normalize(60),
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: normalize(10)
+            flex: 1,
+
           }}
         >
-          <FakeCurrencyInput
-            value={price}
-            onChangeValue={setPrice}
-            prefix="$ "
-            delimiter=","
-            separator="."
-            precision={2}
-            style={{
-              fontSize: normalize(22),
-              color: theme.colors.white,
-              lineHeight: normalize(36.8)
+          <DatePicker
+            modal
+            open={openDate}
+            date={date}
+            onConfirm={(date) => {
+              setOpenDate(false)
+              setDate(date)
             }}
-            placeholder="Enter the price"
-            placeholderTextColor="white"
-            onChangeText={(formattedValue) => {
-              // setPrice(formattedValue)
+            onCancel={() => {
+              setOpenDate(false)
             }}
           />
-
-        </KeyboardAvoidingView>
-        <Text
-          style={{
-            color: theme.colors.black,
-            fontSize: normalize(14),
-            lineHeight: normalize(24.1),
-            // textAlign :"center",
-            alignSelf: "center",
-            width: '90%'
-          }}
-        >
-          Enter the price above
-        </Text>
-        <TextInput
-          value={title}
-          maxLength={10}
-          onChangeText={text => setTitle(text)}
-          label="Title"
-          placeholder="Electricity bills, Stipend"
-          mode="outlined"
-          style={{
+          <Loader loading={isLoading} color={theme.colors.primary} />
+          <TouchableOpacity
+            onPress={() => {
+              setOpenDate(true)
+            }}
+            style={{
             backgroundColor: theme.colors.white,
-            width: '90%',
-            alignSelf: "center",
-            borderWidth: 0,
-            borderColor: theme.colors.background,
-            marginVertical: normalize(10)
-          }}
+            padding: normalize(10),
+            width : '90%',
+            alignSelf : "center",
+            marginTop: normalize(15),
+            borderRadius: normalize(12),
+            elevation: 1,
+            flexDirection: "row",
+            alignItems: "center"
+            }}
+          >
+            <Text
+              style={{
+                fontSize: normalize(19),
+                fontWeight: "600",
+                textTransform: "uppercase"
+              }}
+            >{months[date.getMonth()] }{" "}{date.getFullYear()}</Text>
+            <List.Icon icon="archive-arrow-down" color={theme.colors.primary} />
+          </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "baseline",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: normalize(21),
+                lineHeight: normalize(36.14),
+                color: theme.colors.black,
+                marginRight: normalize(15),
+                textTransform: "capitalize",
 
-        />
-        <KeyboardAvoidingView behavior={"padding"}>
+              }}
+            >
+              Add {visible}
+            </Text>
+            <TouchableOpacity
+              onPress={switchMode}
+              style={{
+                backgroundColor: theme.colors.primary,
+                padding: normalize(10),
+                borderRadius: normalize(12)
+              }}
+            >
+              <Icon name="retweet" size={22} color={theme.colors.white} />
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
+              backgroundColor: theme.colors.primary,
+              width: '90%',
+              alignSelf: "center",
+              borderRadius: normalize(10),
+              padding: normalize(10),
+              marginTop: normalize(10)
+            }}
+          >
+            <FakeCurrencyInput
+              value={price}
+              onChangeValue={setPrice}
+              prefix="$ "
+              delimiter=","
+              separator="."
+              precision={2}
+              style={{
+                fontSize: normalize(22),
+                color: theme.colors.white,
+                lineHeight: normalize(36.8)
+              }}
+              placeholder="Enter the price"
+              placeholderTextColor="white"
+              onChangeText={(formattedValue) => {
+                // setPrice(formattedValue)
+              }}
+
+            />
+          </View>
+          <Text
+            style={{
+              color: theme.colors.black,
+              fontSize: normalize(14),
+              lineHeight: normalize(24.1),
+              // textAlign :"center",
+              alignSelf: "center",
+              width: '90%'
+            }}
+          >
+            Enter the price above
+          </Text>
+          <TextInput
+            value={title}
+            maxLength={10}
+            onChangeText={text => setTitle(text)}
+            label="Title"
+            placeholder="Electricity bills, Stipend"
+            mode="outlined"
+            style={{
+              backgroundColor: theme.colors.white,
+              width: '90%',
+              alignSelf: "center",
+              borderWidth: 0,
+              borderColor: theme.colors.background,
+              marginVertical: normalize(10)
+            }}
+
+          />
           <TextInput
             maxLength={35}
             value={description}
@@ -312,77 +346,68 @@ const AddTransaction = ({
             numberOfLines={5}
             label="Description"
           />
-        </KeyboardAvoidingView>
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={categoryItems}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setCategoryItems}
-          showTickIcon={true}
-          showArrowIcon={true}
-          zIndex={1000}
-          translation={{
-            PLACEHOLDER: "Select Category"
-          }}
-          dropDownContainerStyle={{
-            width: '90%',
-            alignSelf: "center",
-            height: normalize(160),
-            borderColor: theme.colors.primary
-          }}
-          dropDownDirection="TOP"
-          style={{
-            width: '90%',
-            alignSelf: "center",
-            marginVertical: normalize(17),
-            borderColor: theme.colors.primary
-          }}
-        />
-
-        <TouchableOpacity
-          onPress={() => {
-            setOpenDate(true)
-          }}
-        >
-          <Text
-          style={{
-            textAlign : "center",
-            fontSize: normalize(19)
-          }}
-          >{date.toDateString()}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            width: "90%",
-            alignSelf: "center",
-            backgroundColor: theme.colors.primary,
-            padding: normalize(4),
-            borderRadius: normalize(4),
-            height: normalize(55),
-            borderRadius: normalize(10),
-            justifyContent: "center",
-            marginTop: normalize(10)
-          }}
-          disabled={isLoading}
-          onPress={addTransaction}
-        >
-          <Text
-            style={{
-              color: theme.colors.white,
-              textAlign: "center",
-              fontSize: normalize(19),
-              lineHeight: normalize(31.22),
-              fontWeight: "500",
+          <DropDownPicker
+            open={open}
+            value={value}
+            items={categoryItems}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setCategoryItems}
+            showTickIcon={true}
+            showArrowIcon={true}
+            zIndex={1000}
+            translation={{
+              PLACEHOLDER: "Select Category"
             }}
-          >
-            Add {visible === "incomes" ? "Income" : "Expense"
-            }
-          </Text>
-        </TouchableOpacity>
+            dropDownContainerStyle={{
+              width: '90%',
+              alignSelf: "center",
+              height: normalize(160),
+              borderColor: theme.colors.primary
+            }}
+            dropDownDirection="TOP"
+            style={{
+              width: '90%',
+              alignSelf: "center",
+              marginVertical: normalize(17),
+              borderColor: theme.colors.primary
+            }}
+          />
 
-      </ScrollView>
+          <TouchableOpacity
+            style={{
+              width: "90%",
+              alignSelf: "center",
+              backgroundColor: theme.colors.primary,
+              padding: normalize(4),
+              borderRadius: normalize(4),
+              height: normalize(55),
+              borderRadius: normalize(10),
+              justifyContent: "center",
+              marginTop: normalize(10)
+            }}
+            disabled={isLoading}
+            onPress={addTransaction}
+          >
+            <Text
+              style={{
+                color: theme.colors.white,
+                textAlign: "center",
+                fontSize: normalize(19),
+                lineHeight: normalize(31.22),
+                fontWeight: "500",
+              }}
+            >
+              Add {visible === "incomes" ? "Income" : "Expense"
+              }
+            </Text>
+          </TouchableOpacity>
+          <View style={{
+            height: normalize(120),
+          }} />
+        </ScrollView>
+
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

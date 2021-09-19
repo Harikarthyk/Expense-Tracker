@@ -13,6 +13,7 @@ export const requestHandler = async (url, data, header, method , navigation = nu
         return response
     } catch (error) {
         console.log("error services", error);
+        
         if(error.response.status === 401 ) {
             
             console.log("401", 401);   

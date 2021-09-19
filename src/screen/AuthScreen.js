@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Alert,
   Dimensions,
   KeyboardAvoidingView,
   Linking,
@@ -40,6 +41,7 @@ const AuthScreen = ({ navigation }) => {
       };
       let response = await requestHandler(url, inputData, headers, method, navigation);
       const { data } = response;
+      console.log(data,'asnkoSNLK')
       setLoader(false);
       if (data?.success === true) {
         Toast.show('Lets move in');

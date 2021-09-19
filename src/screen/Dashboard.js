@@ -211,7 +211,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
 
   return (
     <SafeAreaView style={{
-      backgroundColor: theme.colors.white,
+      backgroundColor: theme.colors.background,
       flex: 1
     }}>
       <Loader loading={isLoading} color={theme.colors.primary} />
@@ -251,7 +251,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
             lineHeight: normalize(43.23)
           }}
         >
-          Welcome Back {user?.name}
+          Welcome Back {user?.name.substring(0,15)}
         </Text>
         <Text
           style={{
@@ -263,7 +263,16 @@ const Dashboard = ({ navigation, user, setUser }) => {
         >
           {greetingText()}
         </Text>
-        <Animated.View style={styles.HomeBody}>
+        {show && (
+                <MonthPicker
+                  onChange={onValueChange}
+                  value={date}
+                  minimumDate={new Date(2020, 1)}
+                  maximumDate={new Date()}
+                  locale="en"
+                />
+              )}
+        {/* <Animated.View style={styles.HomeBody}>
           <LinearGradient
             colors={[theme.colors.primary, "#7a91ff"]}
             style={[{ ...styles.Box, borderRadius: normalize(11), height: height / 4.5 }]}>
@@ -274,14 +283,15 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 fontSize: normalize(21),
                 lineHeight: normalize(31.11)
               }}
-            >{(Number(user?.balance)).toFixed(2) > 0 ? "Your are left with" : "Crossing your limit this month"} </Text>
+            >
+              Your Balance
+              </Text>
             <Text
               style={{
                 fontSize: normalize(28.1),
                 textAlign: "center",
                 color: theme.colors.white,
                 marginTop: normalize(5),
-                // marginBottom: normalize(15)
               }}
             >₹ {(Number(user?.balance)).toFixed(2)}</Text>
             <View
@@ -292,15 +302,7 @@ const Dashboard = ({ navigation, user, setUser }) => {
                 marginTop: normalize(15)
               }}
             >
-              {show && (
-                <MonthPicker
-                  onChange={onValueChange}
-                  value={date}
-                  minimumDate={new Date(2020, 1)}
-                  maximumDate={new Date()}
-                  locale="en"
-                />
-              )}
+              
               <TouchableOpacity
                 onPress={() => showPicker(true)}
                 style={{
@@ -333,38 +335,90 @@ const Dashboard = ({ navigation, user, setUser }) => {
                   }}
                 >{months[(date.getMonth())]}</Text>
               </TouchableOpacity>
-              {/* <View
-                style={{
-                  height: "60%",
-                  justifyContent: "space-between"
-                }}
-              >
-                <View
-                  style={{ flexDirection: "row", alignSelf: "center", justifyContent: "center", alignItems: "center", }}
-                >
-
-                  <Text
-                    style={{
-                      fontSize: normalize(19.2),
-                      lineHeight: normalize(21.21),
-                      color: theme.colors.white,
-
-                    }}
-                  >
-
-                    Earned (₹ {Number(user?.income).toFixed(2)}) </Text>
-                </View>
-                <Text
-                  style={{
-                    fontSize: normalize(19.2),
-                    lineHeight: normalize(21.21),
-                    color: theme.colors.white
-                  }}
-                >Spent (₹ {Number(user?.expense).toFixed(2)}) </Text>
-              </View> */}
+             
             </View>
           </LinearGradient>
-        </Animated.View>
+        </Animated.View> */}
+        
+        <View
+          style={{
+            flexDirection : "row",
+            height: normalize(130),
+            alignItems: "center",
+            padding: normalize(10),
+            backgroundColor: "#eddff5",
+            borderRadius: normalize(12),
+            elevation: 1,
+          }}
+        >
+          <View
+          style={{
+            flex:1,
+            marginLeft: normalize(15)
+          }}
+            >
+          <Text
+            style={{
+              fontSize: normalize(25),
+              fontWeight: "300",
+              lineHeight: normalize(35),
+              marginVertical: normalize(5)
+            }}
+          >Your Balance </Text>
+          <Text
+            style={{
+              fontSize: normalize(25),
+              fontWeight: "700",
+              lineHeight: normalize(35),
+              marginVertical: normalize(10)
+            }}
+          >
+          ₹ {(Number(user?.balance)).toFixed(2)}
+          </Text>
+          </View>
+          <View
+            style={{
+              flex :1,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+          <TouchableOpacity
+                onPress={() => showPicker(true)}
+                style={{
+                  backgroundColor: theme.colors.white,
+                  width: normalize(100),
+                  height: "70%",
+                  borderRadius: normalize(12)
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "#b32b56",
+                    color: theme.colors.white,
+                    textAlign: "center",
+                    borderTopRightRadius: normalize(12),
+                    borderTopLeftRadius: normalize(12),
+                    fontWeight: "600",
+                    fontSize: normalize(17),
+                    paddingBottom: normalize(10)
+                  }}
+                >{JSON.stringify(date.getFullYear())}</Text>
+                <Text
+                  style={{
+                    fontSize: normalize(19),
+                    textAlign: "center",
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    alignSelf: 'center',
+                    marginTop: normalize(8),
+                    textTransform: "uppercase"
+                  }}
+                >{months[(date.getMonth())]}</Text>
+              </TouchableOpacity>
+          </View>
+        </View>
         <View
           style={{
             width: '100%',
