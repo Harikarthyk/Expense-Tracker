@@ -270,7 +270,7 @@ const AuthScreen = ({ navigation }) => {
 
               disabled={loader}
               onPress={() => {
-                Linking.openURL(`https://expense-tracker-apinative.herokuapp.com/forgot-password`);
+                Linking.openURL(`https://expense-tracker-hach.herokuapp.com/forgot-password`);
               }}
               style={{
                 marginVertical: normalize(7)

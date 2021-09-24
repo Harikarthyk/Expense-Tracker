@@ -1,1 +1,1 @@
-export const API = `https://expense-tracker-apinative.herokuapp.com/api`
+export const API = `https://expense-tracker-hach.herokuapp.com/api`
