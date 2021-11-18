@@ -279,7 +279,7 @@ const AddTransaction = ({
             <FakeCurrencyInput
               value={price}
               onChangeValue={setPrice}
-              prefix="$ "
+              prefix="₹ "
               delimiter=","
               separator="."
               precision={2}
