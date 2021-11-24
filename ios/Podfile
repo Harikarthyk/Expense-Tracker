@@ -16,6 +16,8 @@ target 'expensetracker' do
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'RNCPicker', :path => '../node_modules/@react-native-picker/picker'
+
   target 'expensetrackerTests' do
     inherit! :complete
     # Pods for testing

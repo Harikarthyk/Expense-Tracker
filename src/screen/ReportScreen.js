@@ -109,6 +109,7 @@ export const ReportScreen = ({ navigation, user }) => {
         setDate(selectedDate);
     }
 
+    const [chart, setChart] = useState('LineChart');
 
     return (
         <SafeAreaView
@@ -133,57 +134,108 @@ export const ReportScreen = ({ navigation, user }) => {
                         locale="en"
                     />
                 )}
-                <TouchableOpacity
-                    style={{
-                        flexDirection: "row",
-                        marginBottom: normalize(20)
-                    }}
-                    disabled={expenses.isLoading || incomes.isLoading}
-                    onPress={() => {
-                        setShowPicker(true);
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: normalize(25.12),
-                            color: theme.colors.primary,
-                            lineHeight: normalize(24.23),
-
-                        }}
-                    >
-
-                        {date.getFullYear() + " "}
-                        {months[date.getMonth()]}
-                    </Text>
-                    <Text
-                        style={{ marginLeft: normalize(15) }}
-                    >change</Text>
-                </TouchableOpacity>
                 <Text
                     style={{
-                        fontSize: normalize(19.12),
-                        color: "grey",
-                        lineHeight: normalize(24.23),
+                        color: "gray",
+                    }}
+                >
+                    you can change month and charts.
+                </Text>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-around"
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            flexDirection: "row",
+                            marginVertical: normalize(5),
+                            alignItems: "center",
+                            backgroundColor: theme.colors.white,
+                            padding: normalize(10),
+                            marginBottom: normalize(10),
+                            elevation: 1,
+                            marginRight: 5,
+                            borderRadius: 4
+                        }}
+                        disabled={expenses.isLoading || incomes.isLoading}
+                        onPress={() => {
+                            setShowPicker(true);
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: normalize(20.12),
+                                color: theme.colors.primary,
+                                lineHeight: normalize(30.23),
+                                paddingHorizontal: normalize(10)
+                            }}
+                        >
+                            {date.getFullYear() + " "}
+                            {months[date.getMonth()]}
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            flexDirection: "row",
+                            marginVertical: normalize(5),
+                            alignItems: "center",
+                            backgroundColor: theme.colors.white,
+                            padding: normalize(10),
+                            marginBottom: normalize(10),
+                            elevation: 1,
+                            marginLeft: 5,
+                            borderRadius: 4
+                        }}
+                        disabled={expenses.isLoading || incomes.isLoading}
+                        onPress={() => {
+                            if (chart === "BarChart")
+                                setChart('LineChart');
+                            else
+                                setChart('BarChart')
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: normalize(20.12),
+                                color: theme.colors.primary,
+                                lineHeight: normalize(25.23),
+                                paddingHorizontal: normalize(10)
+                            }}
+                        >
+                            {chart === "LineChart" ? "Line Chart": "Bar Chart"}
+                        </Text>
+
+                    </TouchableOpacity>
+                </View>
+                <Text
+                    style={{
+                        fontSize: normalize(20.12),
+                        color: theme.colors.black,
+                        lineHeight: normalize(26.23),
                         fontWeight: "700",
                     }}
                 >
                     Your Expense for this month
                 </Text>
                 {expenses.isLoading === false && expenses?.data?.length < 2 &&
-                     <View
-                     style={{
-                         height: normalize(150),
-                         justifyContent: "center",
-                         alignItems: "center"
-                     }}
-                 >
-                     <Text
-                         style={{
-                             textAlign: "center",
-                             fontSize: normalize(20)
-                         }}
-                     >No suitable Records found</Text>
-                 </View>
+                    <View
+                        style={{
+                            height: normalize(150),
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}
+                    >
+                        <Text
+                            style={{
+                                textAlign: "center",
+                                fontSize: normalize(20)
+                            }}
+                        >
+                            No suitable Records found
+                        </Text>
+                    </View>
                 }
 
                 {expenses.isLoading === false && expenses?.data?.length > 1 &&
@@ -192,51 +244,87 @@ export const ReportScreen = ({ navigation, user }) => {
                             marginVertical: normalize(20)
                         }}
                     >
-
-                        <LineChart
-                            data={{
-                                labels: expenses.data.map(item => item._id),
-                                datasets: [
-                                    {
-                                        data: expenses.data.map(item => Number(item.total).toFixed(2))
+                        {chart === "LineChart" ?
+                            <LineChart
+                                data={{
+                                    labels: expenses.data.map(item => item._id),
+                                    datasets: [
+                                        {
+                                            data: expenses.data.map(item => Number(item.total).toFixed(2))
+                                        }
+                                    ]
+                                }}
+                                width={Dimensions.get("window").width - 28} // from react-native
+                                height={270}
+                                yAxisLabel="₹"
+                                yAxisSuffix=""
+                                yAxisInterval={1} // optional, defaults to 1
+                                chartConfig={{
+                                    backgroundColor: theme.colors.primary,
+                                    backgroundGradientFrom: theme.colors.primary,
+                                    // backgroundGradientTo: "#ffa726",
+                                    decimalPlaces: 0, // optional, defaults to 2dp
+                                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    style: {
+                                        borderRadius: normalize(4),
+                                    },
+                                    propsForDots: {
+                                        r: "7",
+                                        strokeWidth: "1",
+                                        stroke: "#ffa726"
                                     }
-                                ]
-                            }}
-                            width={Dimensions.get("window").width - 28} // from react-native
-                            height={270}
-                            yAxisLabel="₹"
-                            yAxisSuffix=""
-                            yAxisInterval={1} // optional, defaults to 1
-                            chartConfig={{
-                                backgroundColor: theme.colors.primary,
-                                backgroundGradientFrom: theme.colors.primary,
-                                // backgroundGradientTo: "#ffa726",
-                                decimalPlaces: 0, // optional, defaults to 2dp
-                                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                style: {
-                                    borderRadius: normalize(10),
-                                },
-                                propsForDots: {
-                                    r: "7",
-                                    strokeWidth: "3",
-                                    stroke: "#ffa726"
-                                }
-                            }}
-                            bezier
-                            style={{
-                                marginVertical: normalize(10),
-                                borderRadius: normalize(12)
-                            }}
-                        />
+                                }}
+                                style={{
+                                    marginVertical: normalize(10),
+                                    borderRadius: normalize(7)
+                                }}
+                            />
+                            : 
+                            <BarChart
+                                data={{
+                                    labels: expenses.data.map(item => item._id),
+                                    datasets: [
+                                        {
+                                            data: expenses.data.map(item => Number(item.total).toFixed(2))
+                                        }
+                                    ]
+                                }}
+                                width={Dimensions.get("window").width - 28} // from react-native
+                                height={270}
+                                yAxisLabel="₹"
+                                yAxisSuffix=""
+                                yAxisInterval={1} // optional, defaults to 1
+                                chartConfig={{
+                                    backgroundColor: theme.colors.primary,
+                                    backgroundGradientFrom: theme.colors.primary,
+                                    // backgroundGradientTo: "#ffa726",
+                                    decimalPlaces: 0, // optional, defaults to 2dp
+                                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    style: {
+                                        borderRadius: normalize(4),
+                                    },
+                                    propsForDots: {
+                                        r: "7",
+                                        strokeWidth: "1",
+                                        stroke: "#ffa726"
+                                    }
+                                }}
+                                style={{
+                                    marginVertical: normalize(10),
+                                    borderRadius: normalize(7)
+                                }}
+                            />
+                        }
                     </View>
                 }
 
                 <Text
                     style={{
-                        fontSize: normalize(19.12),
-                        color: "grey",
-                        lineHeight: normalize(24.23),
+                        fontSize: normalize(20.12),
+                        color: "black",
+                        lineHeight: normalize(26.23),
                         fontWeight: "700",
                     }}
                 >
@@ -264,45 +352,85 @@ export const ReportScreen = ({ navigation, user }) => {
                             marginVertical: normalize(20)
                         }}
                     >
+                        {
+                            chart === "LineChart" ?
 
-                        <LineChart
-                            data={{
-                                labels: incomes.data.map(item => item._id),
-                                datasets: [
-                                    {
-                                        data: incomes.data.map(item => Number(item.total))
-                                    }
-                                ]
-                            }}
+                                <LineChart
+                                    data={{
+                                        labels: incomes.data.map(item => item._id),
+                                        datasets: [
+                                            {
+                                                data: incomes.data.map(item => Number(item.total))
+                                            }
+                                        ]
+                                    }}
 
-                            width={Dimensions.get("window").width - 28} // from react-native
-                            height={270}
-                            yAxisLabel="₹"
-                            yAxisSuffix=""
-                            yAxisInterval={1} // optional, defaults to 1
-                            chartConfig={{
-                                backgroundColor: theme.colors.primary,
-                                backgroundGradientFrom: "#eba365",
-                                // backgroundGradientTo: "#ffa726",
-                                decimalPlaces: 0, // optional, defaults to 2dp
-                                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                style: {
-                                    borderRadius: normalize(10),
-                                },
-                                propsForDots: {
-                                    r: "7",
-                                    strokeWidth: "3",
-                                    stroke: "#ffa726"
-                                }
-                            }}
-                            bezier
-                            style={{
-                                marginVertical: normalize(10),
-                                borderRadius: normalize(12)
-                            }}
-                            
-                        />
+                                    width={Dimensions.get("window").width - 28} // from react-native
+                                    height={270}
+                                    yAxisLabel="₹"
+                                    yAxisSuffix=""
+                                    yAxisInterval={1} // optional, defaults to 1
+                                    chartConfig={{
+                                        backgroundColor: theme.colors.primary,
+                                        backgroundGradientFrom: "#eba365",
+                                        // backgroundGradientTo: "#ffa726",
+                                        decimalPlaces: 0, // optional, defaults to 2dp
+                                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                        style: {
+                                            borderRadius: normalize(10),
+                                        },
+                                        propsForDots: {
+                                            r: "7",
+                                            strokeWidth: "3",
+                                            stroke: "#ffa726"
+                                        }
+                                    }}
+                                    style={{
+                                        marginVertical: normalize(10),
+                                        borderRadius: normalize(7)
+                                    }}
+
+                                /> :
+                                <BarChart
+                                    data={{
+                                        labels: incomes.data.map(item => item._id),
+                                        datasets: [
+                                            {
+                                                data: incomes.data.map(item => Number(item.total))
+                                            }
+                                        ]
+                                    }}
+
+                                    width={Dimensions.get("window").width - 28} // from react-native
+                                    height={270}
+                                    yAxisLabel="₹"
+                                    yAxisSuffix=""
+                                    yAxisInterval={1} // optional, defaults to 1
+                                    chartConfig={{
+                                        backgroundColor: theme.colors.primary,
+                                        backgroundGradientFrom: "#eba365",
+                                        // backgroundGradientTo: "#ffa726",
+                                        decimalPlaces: 0, // optional, defaults to 2dp
+                                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                        style: {
+                                            borderRadius: normalize(10),
+                                        },
+                                        propsForDots: {
+                                            r: "7",
+                                            strokeWidth: "3",
+                                            stroke: "#ffa726"
+                                        }
+                                    }}
+                                    bezier
+                                    style={{
+                                        marginVertical: normalize(10),
+                                        borderRadius: normalize(7)
+                                    }}
+
+                                />
+                        }
                     </View>
                 }
             </ScrollView>

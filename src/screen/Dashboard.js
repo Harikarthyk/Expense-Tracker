@@ -96,9 +96,11 @@ const Dashboard = ({ navigation, user, setUser }) => {
    * On Change on date update state
    */
   const onValueChange = async (event, newDate) => {
-    const selectedDate = newDate || date;
     showPicker(false);
-
+    setShow(false);
+    setIsLoading(true);
+    const selectedDate = newDate || date;
+    
     setDate(selectedDate);
     var firstDay =
       new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
@@ -119,6 +121,8 @@ const Dashboard = ({ navigation, user, setUser }) => {
     };
 
     let response = await requestHandler(url, body, header, method, navigation);
+    setIsLoading(false);
+    
     if (!response || response?.data?.success === false) {
       setIsLoading(false);
       Alert.alert('Error', 'Something Went Wrong');

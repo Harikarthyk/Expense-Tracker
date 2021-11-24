@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Alert, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
 import { requestHandler } from '../services';
 import { API } from '../utils/url';
 import { theme } from '../core/theme'
@@ -10,11 +9,10 @@ import { setAllExpensesCategories, setAllIncomeCategories } from '../redux/actio
 import normalize from 'react-native-normalize';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { FakeCurrencyInput } from 'react-native-currency-input';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { TextInput, Snackbar, List } from 'react-native-paper';
+import { TextInput, List } from 'react-native-paper';
 import { setUserToStore } from '../redux/action/user';
-import DatePicker from 'react-native-date-picker';
-
+import {Picker} from '@react-native-picker/picker';
+import MonthPicker from 'react-native-month-year-picker';
 
 const months = ["Jan", "Feb", "March", "April", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
@@ -31,25 +29,11 @@ const AddTransaction = ({
   const [isLoading, setIsLoading] = useState(false);
   const [price, setPrice] = useState(0);
   const [categoryItems, setCategoryItems] = useState([]);
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(new Date());
-  const [openDate, setOpenDate] = useState(false);
 
-  // useEffect(()=>{
-  //   let arr = category[visible==="income" ? "incomeCategories" : "expenseCategories"].map(item => {
-  //     return{
-  //       label : item.category,
-  //       value : item.category,
-  //       icon :() => <Image source={{uri : item.icon}} style={{
-  //         padding : 4,height : 50 ,width : 50
-  //       }} />
-  //     }
-  //   });
-  //   setCategory([...arr]);
-  // },[visible])
 
   useEffect(async () => {
     try {
@@ -94,25 +78,22 @@ const AddTransaction = ({
         return {
           label: item.category,
           value: item.category,
-          icon: () => <Image source={{ uri: item.icon }} style={{
-            padding: 4, height: 50, width: 50
-          }} />
         }
       });
-      setCategoryItems([...arr]);
+      let newArray = [{label: "Select Category"}].concat(arr);
+      setCategoryItems([...newArray]);
     }
   }
 
   const addTransaction = async () => {
     if (title.length === 0) {
-      ToastAndroid.show('Enter Title to continue', ToastAndroid.SHORT);
+      ToastAndroid.show('Enter Title to Continue.', ToastAndroid.SHORT);
       return;
     }
-    // if (parseInt(price) < 0 || parseInt(price) > 100000) {
-    //   ToastAndroid.show('Price must be min 1');
-    //   return;
-    // }
-
+    if(value === undefined || value === null || value.length === 0 || value === "Select Category"){
+      ToastAndroid.show('Choose Category to Continue.', ToastAndroid.SHORT);
+      return;
+    }
     setIsLoading(true);
     let method = "POST";
     let url = `${API}/${visible === "incomes" ? "income" : "expense"}/add/${user?._id}`;
@@ -129,21 +110,21 @@ const AddTransaction = ({
       createdAt: date
     };
     if (!body.category) {
-      ToastAndroid.show('Mention Category', ToastAndroid.SHORT);
+      ToastAndroid.show('Mention Category to Continue.', ToastAndroid.SHORT);
       setIsLoading(false);
       return;
     }
     if (body.price === 0 && body.price <= 100000) {
-      Alert.alert('Error', 'Price not in range')
+      Alert.alert('Error', 'Enter a Valid Price.')
       setIsLoading(false);
       return;
     }
-    console.log(body)
     let response = await requestHandler(url, body, header, method, navigation);
     let { data } = response;
     if (data.success === true) {
       setTitle('');
       setDescription('');
+      setPrice('0');
       setValue('');
       Alert.alert('Success', "Added Successfully");
       const reducer = async (accumulator, currentValue) => {
@@ -164,7 +145,6 @@ const AddTransaction = ({
           let newBalance = totalIncomes - user.expense;
           setUser({ incomes: arr, income: totalIncomes, balance: newBalance })
         }
-
       }
 
     } else {
@@ -173,31 +153,56 @@ const AddTransaction = ({
     setIsLoading(false);
 
   }
-  return (
-    <SafeAreaView style={{
-      flex: 1,
-      backgroundColor: theme.colors.background
 
-    }}>
+  const [show, setShow] = useState(false);
+
+  const showPicker = useCallback((value) => setShow(value), []);
+  const onValueChange = useCallback(
+    (event, newDate) => {
+      const selectedDate = newDate || date;
+      showPicker(false);
+      setDate(selectedDate);
+    },
+    [date, showPicker],
+  );
+  return (
+    <SafeAreaView 
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.background
+      }}
+    >
       <KeyboardAvoidingView
         style={{
           flex: 1,
+          
         }}
       >
+        <Text
+          style={{
+            color: "gray",
+            fontSize: normalize(22),
+            lineHeight: normalize(30),
+            // marginVertical: normalize(10),
+            width: '90%',
+            marginTop: normalize(20),
+            alignSelf: "center"
+          }}
+        >
+          Start Tracking Your Hard works.
+        </Text>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-
             flexGrow: 1,
-            backgroundColor: theme.colors.background
-            // justifyContent: "center"
+            backgroundColor: theme.colors.background,
+            padding: normalize(15)
           }}
           style={{
             flex: 1,
-
           }}
         >
-          <DatePicker
+          {/* <DatePicker
             modal
             open={openDate}
             date={date}
@@ -208,11 +213,20 @@ const AddTransaction = ({
             onCancel={() => {
               setOpenDate(false)
             }}
-          />
+          /> */}
+          {/* {show && (
+            <MonthPicker
+              onChange={onValueChange}
+              value={date}
+              minimumDate={new Date(2020, 1)}
+              maximumDate={new Date()}
+              locale="en"
+            />
+          )} */}
           <Loader loading={isLoading} color={theme.colors.primary} />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
-              setOpenDate(true)
+              setShow(true)
             }}
             style={{
             backgroundColor: theme.colors.white,
@@ -234,12 +248,13 @@ const AddTransaction = ({
               }}
             >{months[date.getMonth()] }{" "}{date.getFullYear()}</Text>
             <List.Icon icon="archive-arrow-down" color={theme.colors.primary} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View
             style={{
               flexDirection: "row",
-              alignItems: "baseline",
+              alignItems: "center",
               justifyContent: "center",
+              marginTop: normalize(15)
             }}
           >
             <Text
@@ -265,15 +280,14 @@ const AddTransaction = ({
               <Icon name="retweet" size={22} color={theme.colors.white} />
             </TouchableOpacity>
           </View>
-
           <View
             style={{
               backgroundColor: theme.colors.primary,
-              width: '90%',
+              width: '100%',
               alignSelf: "center",
-              borderRadius: normalize(10),
-              padding: normalize(10),
-              marginTop: normalize(10)
+              borderRadius: normalize(5),
+              marginTop: normalize(15),
+              padding: normalize(15)
             }}
           >
             <FakeCurrencyInput
@@ -286,14 +300,13 @@ const AddTransaction = ({
               style={{
                 fontSize: normalize(22),
                 color: theme.colors.white,
-                lineHeight: normalize(36.8)
+                lineHeight: normalize(36.8),
               }}
               placeholder="Enter the price"
               placeholderTextColor="white"
               onChangeText={(formattedValue) => {
                 // setPrice(formattedValue)
               }}
-
             />
           </View>
           <Text
@@ -301,12 +314,11 @@ const AddTransaction = ({
               color: theme.colors.black,
               fontSize: normalize(14),
               lineHeight: normalize(24.1),
-              // textAlign :"center",
               alignSelf: "center",
-              width: '90%'
+              width: '100%'
             }}
           >
-            Enter the price above
+            Enter the amount in rupees above.
           </Text>
           <TextInput
             value={title}
@@ -317,7 +329,7 @@ const AddTransaction = ({
             mode="outlined"
             style={{
               backgroundColor: theme.colors.white,
-              width: '90%',
+              width: '100%',
               alignSelf: "center",
               borderWidth: 0,
               borderColor: theme.colors.background,
@@ -336,7 +348,7 @@ const AddTransaction = ({
             mode="outlined"
             style={{
               backgroundColor: theme.colors.white,
-              width: '90%',
+              width: '100%',
               alignSelf: "center",
               borderWidth: 0,
               borderColor: theme.colors.background,
@@ -346,55 +358,55 @@ const AddTransaction = ({
             numberOfLines={5}
             label="Description"
           />
-          <DropDownPicker
-            open={open}
-            value={value}
-            items={categoryItems}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setCategoryItems}
-            showTickIcon={true}
-            showArrowIcon={true}
-            zIndex={1000}
-            translation={{
-              PLACEHOLDER: "Select Category"
-            }}
-            dropDownContainerStyle={{
-              width: '90%',
-              alignSelf: "center",
-              height: normalize(160),
-              borderColor: theme.colors.primary
-            }}
-            dropDownDirection="TOP"
+  
+          <Picker
             style={{
-              width: '90%',
+              backgroundColor: "white",
+              margin: 2,
+              borderRadius: normalize(12),
+              borderBottomColor: "gray",
+              borderBottomWidth: 0.5,
+              height: normalize(50),
+              width: "100%",
               alignSelf: "center",
-              marginVertical: normalize(17),
-              borderColor: theme.colors.primary
             }}
-          />
+            disabled={true}
+            selectedValue={value}
+            onValueChange={(itemValue, itemIndex) => {
+              setValue(itemValue);
+            }}
+          >
+            {categoryItems.map(item => {
+              return (
+                <Picker.Item label={item.label} value={item.label} />
+              )
+            })}
+          </Picker>
 
           <TouchableOpacity
             style={{
-              width: "90%",
+              width: "100%",
               alignSelf: "center",
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.white,
               padding: normalize(4),
               borderRadius: normalize(4),
               height: normalize(55),
-              borderRadius: normalize(10),
+              borderRadius: normalize(5),
               justifyContent: "center",
-              marginTop: normalize(10)
+              marginTop: normalize(10),
+              borderWidth: 1,
+              borderColor: theme.colors.primary,
+              elevation: 2
             }}
             disabled={isLoading}
             onPress={addTransaction}
           >
             <Text
               style={{
-                color: theme.colors.white,
+                color: theme.colors.primary,
                 textAlign: "center",
                 fontSize: normalize(19),
-                lineHeight: normalize(31.22),
+                lineHeight: normalize(30.22),
                 fontWeight: "500",
               }}
             >
